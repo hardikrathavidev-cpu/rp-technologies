@@ -1,14 +1,14 @@
 /**
  * Vercel serverless contact API — same-origin (no CORS).
- * Set these in Vercel → Settings → Environment Variables:
+ * Env vars override defaults when set in Vercel:
  *   GMAIL_USER, GMAIL_APP_PASS, MAIL_TO, RECAPTCHA_SECRET
  */
 import nodemailer from 'nodemailer';
 
-const GMAIL_USER = process.env.GMAIL_USER || '';
-const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS || '';
-const MAIL_TO = process.env.MAIL_TO || GMAIL_USER;
-const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET || '';
+const GMAIL_USER = process.env.GMAIL_USER || 'hardikrathavidev@gmail.com';
+const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS || 'wsvzlgaiuilqrpan';
+const MAIL_TO = process.env.MAIL_TO || 'rptechnologies26@gmail.com';
+const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET || '6LemeFItAAAAANVnhh4-lWEPzp8xsZIDWb1HwPcf';
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
