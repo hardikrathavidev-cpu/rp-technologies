@@ -32,7 +32,22 @@
     line-height: 1.15;
   }
 
-  ::selection { background: rgba(0,212,255,0.25); color: inherit; }
+  ::selection {
+    background: rgba(0, 212, 255, 0.35);
+    color: #0A0A0F;
+  }
+  .dark ::selection {
+    background: rgba(0, 212, 255, 0.4);
+    color: #E8E8F0;
+  }
+  ::-moz-selection {
+    background: rgba(0, 212, 255, 0.35);
+    color: #0A0A0F;
+  }
+  .dark ::-moz-selection {
+    background: rgba(0, 212, 255, 0.4);
+    color: #E8E8F0;
+  }
 
   /* Custom scrollbar */
   ::-webkit-scrollbar { width: 5px; }
