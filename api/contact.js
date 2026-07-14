@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 
 const GMAIL_USER = process.env.GMAIL_USER || 'hardikrathavidev@gmail.com';
 const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS || 'wsvzlgaiuilqrpan';
-const MAIL_TO = process.env.MAIL_TO || 'rptechnologies26@gmail.com';
+const MAIL_TO = process.env.MAIL_TO || 'hardikrathavidev@gmail.com';
 const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET || '6LemeFItAAAAANVnhh4-lWEPzp8xsZIDWb1HwPcf';
 
 function readBody(req) {
