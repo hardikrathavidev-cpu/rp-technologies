@@ -42,8 +42,8 @@ const CONTACT_INFO = [
   {
     icon: <Mail size={18} />,
     label: 'Email Us',
-    value: 'hello@rptechnologies.in',
-    href: 'mailto:hello@rptechnologies.in',
+    value: 'rptechnologies26@gmail.com',
+    href: 'mailto:rptechnologies26@gmail.com',
   },
   {
     icon: <MapPin size={18} />,
@@ -333,7 +333,7 @@ export function Contact() {
                       <div className="text-xs text-light-muted dark:text-dark-muted leading-relaxed">
                         {errorMsg}{' '}
                         <a
-                          href="mailto:hello@rptechnologies.in"
+                          href="mailto:rptechnologies26@gmail.com"
                           className="text-accent underline underline-offset-2 font-medium"
                         >
                           Email us directly →

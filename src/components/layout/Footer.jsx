@@ -133,10 +133,10 @@ export function Footer() {
                 Have an idea? Let's talk about how we can bring it to life.
               </p>
               <a
-                href="mailto:hello@rptechnologies.in"
+                href="mailto:rptechnologies26@gmail.com"
                 className="flex items-center gap-2 text-sm font-semibold text-accent hover:gap-3 transition-all duration-200 group"
               >
-                hello@rptechnologies.in
+                rptechnologies26@gmail.com
                 <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             </div>
