@@ -1,14 +1,23 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 
-const DOT_COLORS = ['#00D4FF', '#00D4FF', '#8338EC', '#ffffff'];
+/* Theme palette */
+const THEME = {
+  accent: '#00D4FF',
+  accentHover: '#00BFEA',
+  purple: '#8338EC',
+  pink: '#FF006E',
+  lime: '#AAFF00',
+};
+
+const SPARK_COLORS = [THEME.accent, THEME.accent, THEME.accentHover, THEME.purple];
 
 const HOVER_COLORS = {
-  none:   '#00D4FF',
-  link:   '#00D4FF',
-  button: '#FF006E',
-  input:  '#AAFF00',
-  card:   '#8338EC',
+  none:   THEME.accent,
+  link:   THEME.accent,
+  button: THEME.pink,
+  input:  THEME.lime,
+  card:   THEME.purple,
 };
 
 function detectHoverType(el) {
@@ -22,18 +31,41 @@ function detectHoverType(el) {
 
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
-function Dot({ p }) {
+function Spark({ p }) {
+  const base = { position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 99997 };
+
+  if (p.type === 'streak') {
+    return (
+      <motion.div
+        style={{
+          ...base,
+          width: p.length,
+          height: 1,
+          background: `linear-gradient(90deg, ${p.color}90, transparent)`,
+          borderRadius: 2,
+          originX: 0,
+          originY: 0.5,
+          rotate: p.angle,
+        }}
+        initial={{ x: p.x, y: p.y, opacity: p.opacity ?? 0.5, scaleX: 1 }}
+        animate={{ x: p.x + p.dx, y: p.y + p.dy, opacity: 0, scaleX: 0.3 }}
+        transition={{ duration: p.duration, ease: SMOOTH_EASE }}
+      />
+    );
+  }
+
   return (
     <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[99997] rounded-full"
+      className="rounded-full"
       style={{
+        ...base,
         width: p.size,
         height: p.size,
         background: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}50`,
+        boxShadow: `0 0 ${p.size * 2.5}px ${p.color}40`,
       }}
-      initial={{ x: p.x - p.size / 2, y: p.y - p.size / 2, opacity: p.opacity ?? 0.55, scale: 1 }}
-      animate={{ opacity: 0, scale: 0.4 }}
+      initial={{ x: p.x - p.size / 2, y: p.y - p.size / 2, opacity: p.opacity ?? 0.5, scale: 1 }}
+      animate={{ x: p.x - p.size / 2 + p.dx, y: p.y - p.size / 2 + p.dy, opacity: 0, scale: 0.2 }}
       transition={{ duration: p.duration, ease: SMOOTH_EASE }}
     />
   );
@@ -42,60 +74,83 @@ function Dot({ p }) {
 export function CustomCursor() {
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
-  const ringX  = useSpring(mouseX, { stiffness: 140, damping: 24, mass: 0.5 });
-  const ringY  = useSpring(mouseY, { stiffness: 140, damping: 24, mass: 0.5 });
+  const ringX  = useSpring(mouseX, { stiffness: 130, damping: 22, mass: 0.5 });
+  const ringY  = useSpring(mouseY, { stiffness: 130, damping: 22, mass: 0.5 });
 
   const [visible, setVisible]     = useState(false);
   const [clicking, setClicking]   = useState(false);
   const [hoverType, setHoverType] = useState('none');
-  const [dots, setDots]           = useState([]);
+  const [sparks, setSparks]       = useState([]);
   const [moving, setMoving]       = useState(false);
 
   const lastPos      = useRef({ x: 0, y: 0 });
+  const smoothVel    = useRef({ x: 0, y: 0 });
   const cursorPos    = useRef({ x: 0, y: 0 });
+  const hoverRef     = useRef('none');
   const isMovingRef  = useRef(false);
-  const dotId        = useRef(0);
+  const sparkId      = useRef(0);
   const moveTimer    = useRef(null);
   const rafRef       = useRef(null);
   const lastSpawnRef = useRef(0);
   const lastHoverRef = useRef('none');
-  const hoverRef     = useRef('none');
-  const hoverColor   = HOVER_COLORS[hoverType] || HOVER_COLORS.none;
+
+  const hoverColor    = HOVER_COLORS[hoverType] || THEME.accent;
+  const cursorColor   = hoverType !== 'none' ? hoverColor : THEME.accent;
   const isInteractive = hoverType !== 'none';
 
-  const addDot = useCallback((x, y, color, size = 2.5, opacity = 0.5) => {
-    const id = dotId.current++;
-    const dot = {
-      id,
-      x,
-      y,
-      color,
-      size,
-      opacity,
-      duration: 0.5 + Math.random() * 0.3,
-    };
-    setDots((prev) => [...prev.slice(-28), dot]);
+  const addSpark = useCallback((p) => {
+    const id = sparkId.current++;
+    const spark = { ...p, id, duration: p.duration ?? 0.45 + Math.random() * 0.25 };
+    setSparks((prev) => [...prev.slice(-36), spark]);
     setTimeout(() => {
-      setDots((prev) => prev.filter((d) => d.id !== id));
-    }, (dot.duration + 0.1) * 1000);
+      setSparks((prev) => prev.filter((s) => s.id !== id));
+    }, (spark.duration + 0.12) * 1000);
   }, []);
 
-  const spawnDotsAlongPath = useCallback((x0, y0, x1, y1, color) => {
+  const spawnSpark = useCallback((x, y, vx, vy, speed, color) => {
+    const angle = Math.atan2(vy, vx) || 0;
+    const drift = 3 + Math.min(speed * 0.15, 8);
+
+    addSpark({
+      type: 'dot',
+      x, y,
+      dx: -vx * 0.04 + (Math.random() - 0.5) * 2,
+      dy: -vy * 0.04 + (Math.random() - 0.5) * 2,
+      color,
+      size: 2 + Math.random() * 1.5,
+      opacity: 0.35 + Math.random() * 0.25,
+    });
+
+    if (speed > 3 && Math.random() > 0.55) {
+      addSpark({
+        type: 'streak',
+        x, y,
+        dx: -vx * 0.06,
+        dy: -vy * 0.06,
+        angle: (angle * 180) / Math.PI,
+        length: 4 + Math.min(speed * 0.3, 10),
+        color,
+        opacity: 0.35,
+        duration: 0.4,
+      });
+    }
+  }, [addSpark]);
+
+  const spawnAlongPath = useCallback((x0, y0, x1, y1, vx, vy, speed, color) => {
     const dist = Math.hypot(x1 - x0, y1 - y0);
-    const step = 14;
-    const steps = Math.min(Math.max(1, Math.floor(dist / step)), 3);
+    const step = 12;
+    const steps = Math.min(Math.max(1, Math.floor(dist / step)), 4);
 
     for (let i = 1; i <= steps; i++) {
       const t = i / steps;
-      addDot(
-        x0 + (x1 - x0) * t + (Math.random() - 0.5) * 2,
-        y0 + (y1 - y0) * t + (Math.random() - 0.5) * 2,
+      spawnSpark(
+        x0 + (x1 - x0) * t,
+        y0 + (y1 - y0) * t,
+        vx, vy, speed,
         color,
-        2 + Math.random() * 1.5,
-        0.35 + Math.random() * 0.2,
       );
     }
-  }, [addDot]);
+  }, [spawnSpark]);
 
   useEffect(() => {
     if (window.matchMedia('(pointer: coarse)').matches) return;
@@ -104,10 +159,12 @@ export function CustomCursor() {
       if (!isMovingRef.current) return;
 
       const { x, y } = cursorPos.current;
-      const color = HOVER_COLORS[hoverRef.current] || DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
+      const { x: vx, y: vy } = smoothVel.current;
+      const speed = Math.hypot(vx, vy);
+      const color = HOVER_COLORS[hoverRef.current] || SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
 
-      if (now - lastSpawnRef.current > 48) {
-        addDot(x, y, color, 2 + Math.random(), 0.4);
+      if (speed > 0.5 && now - lastSpawnRef.current > 36) {
+        spawnSpark(x, y, vx, vy, speed, color);
         lastSpawnRef.current = now;
       }
 
@@ -126,12 +183,18 @@ export function CustomCursor() {
       const dist = Math.hypot(dx, dy);
       const type = detectHoverType(e.target);
       hoverRef.current = type;
-      const color = HOVER_COLORS[type] || DOT_COLORS[0];
 
+      smoothVel.current = {
+        x: smoothVel.current.x * 0.75 + dx * 0.25,
+        y: smoothVel.current.y * 0.75 + dy * 0.25,
+      };
       cursorPos.current = { x: e.clientX, y: e.clientY };
 
-      if (dist > 6) {
-        spawnDotsAlongPath(lastPos.current.x, lastPos.current.y, e.clientX, e.clientY, color);
+      const color = HOVER_COLORS[type] || THEME.accent;
+      const speed = Math.hypot(smoothVel.current.x, smoothVel.current.y);
+
+      if (dist > 3) {
+        spawnAlongPath(lastPos.current.x, lastPos.current.y, e.clientX, e.clientY, smoothVel.current.x, smoothVel.current.y, speed, color);
         lastPos.current = { x: e.clientX, y: e.clientY };
       }
 
@@ -147,21 +210,24 @@ export function CustomCursor() {
           cancelAnimationFrame(rafRef.current);
           rafRef.current = null;
         }
-      }, 120);
+      }, 130);
     };
 
     const onDown = (e) => {
       setClicking(true);
-      const color = HOVER_COLORS[detectHoverType(e.target)] || '#00D4FF';
-      for (let i = 0; i < 5; i++) {
-        const a = (Math.PI * 2 * i) / 5;
-        addDot(
-          e.clientX + Math.cos(a) * 6,
-          e.clientY + Math.sin(a) * 6,
+      const color = HOVER_COLORS[detectHoverType(e.target)] || THEME.accent;
+      for (let i = 0; i < 6; i++) {
+        const a = (Math.PI * 2 * i) / 6;
+        addSpark({
+          type: 'dot',
+          x: e.clientX,
+          y: e.clientY,
+          dx: Math.cos(a) * (8 + Math.random() * 6),
+          dy: Math.sin(a) * (8 + Math.random() * 6),
           color,
-          2,
-          0.45,
-        );
+          size: 2,
+          opacity: 0.45,
+        });
       }
     };
 
@@ -174,13 +240,16 @@ export function CustomCursor() {
         const color = HOVER_COLORS[type];
         for (let i = 0; i < 4; i++) {
           const a = (Math.PI * 2 * i) / 4;
-          addDot(
-            e.clientX + Math.cos(a) * 5,
-            e.clientY + Math.sin(a) * 5,
+          addSpark({
+            type: 'dot',
+            x: e.clientX,
+            y: e.clientY,
+            dx: Math.cos(a) * 6,
+            dy: Math.sin(a) * 6,
             color,
-            2,
-            0.4,
-          );
+            size: 2,
+            opacity: 0.4,
+          });
         }
       }
       lastHoverRef.current = type;
@@ -209,7 +278,7 @@ export function CustomCursor() {
         rafRef.current = null;
       }
     };
-  }, [mouseX, mouseY, addDot, spawnDotsAlongPath]);
+  }, [mouseX, mouseY, addSpark, spawnSpark, spawnAlongPath]);
 
   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
     return null;
@@ -218,12 +287,12 @@ export function CustomCursor() {
   return (
     <>
       <AnimatePresence>
-        {dots.map((d) => (
-          <Dot key={d.id} p={d} />
+        {sparks.map((s) => (
+          <Spark key={s.id} p={s} />
         ))}
       </AnimatePresence>
 
-      {/* Soft highlight on hover */}
+      {/* Soft theme glow while moving / hovering */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[99994] rounded-full"
         style={{
@@ -233,12 +302,10 @@ export function CustomCursor() {
           translateY: '-50%',
         }}
         animate={{
-          opacity: isInteractive ? 0.75 : moving ? 0.25 : 0,
-          width: isInteractive ? 64 : 48,
-          height: isInteractive ? 64 : 48,
-          background: isInteractive
-            ? `radial-gradient(circle, ${hoverColor}28 0%, ${hoverColor}08 50%, transparent 72%)`
-            : 'radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)',
+          opacity: isInteractive ? 0.7 : moving ? 0.3 : 0,
+          width: isInteractive ? 60 : 50,
+          height: isInteractive ? 60 : 50,
+          background: `radial-gradient(circle, ${cursorColor}22 0%, ${cursorColor}08 50%, transparent 72%)`,
         }}
         transition={{ duration: 0.3, ease: SMOOTH_EASE }}
       />
@@ -271,7 +338,7 @@ export function CustomCursor() {
         )}
       </AnimatePresence>
 
-      {/* Inner dot */}
+      {/* Inner dot — theme accent */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[99999] rounded-full"
         style={{
@@ -285,13 +352,13 @@ export function CustomCursor() {
         animate={{
           opacity: visible ? 1 : 0,
           scale: clicking ? 0.7 : isInteractive ? 1.25 : 1,
-          backgroundColor: isInteractive ? hoverColor : '#ffffff',
-          boxShadow: `0 0 ${isInteractive ? 10 : 6}px ${isInteractive ? hoverColor : 'rgba(0,212,255,0.6)'}`,
+          backgroundColor: cursorColor,
+          boxShadow: `0 0 8px ${cursorColor}, 0 0 16px ${cursorColor}50`,
         }}
         transition={{ duration: 0.2, ease: SMOOTH_EASE }}
       />
 
-      {/* Outer ring */}
+      {/* Outer ring — theme accent */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[99998] rounded-full box-border"
         style={{
@@ -301,14 +368,15 @@ export function CustomCursor() {
           translateY: '-50%',
           width: 28,
           height: 28,
-          borderWidth: 1,
+          borderWidth: 1.5,
           borderStyle: 'solid',
         }}
         animate={{
-          opacity: visible ? 0.85 : 0,
-          scale: clicking ? 0.75 : isInteractive ? 1.25 : 1,
-          borderColor: isInteractive ? `${hoverColor}99` : 'rgba(0,212,255,0.35)',
-          backgroundColor: isInteractive ? `${hoverColor}10` : 'transparent',
+          opacity: visible ? 0.9 : 0,
+          scale: clicking ? 0.75 : isInteractive ? 1.25 : moving ? 1.05 : 1,
+          borderColor: `${cursorColor}80`,
+          backgroundColor: `${cursorColor}0c`,
+          boxShadow: moving ? `0 0 12px ${cursorColor}30` : 'none',
         }}
         transition={{ duration: 0.25, ease: SMOOTH_EASE }}
       />
