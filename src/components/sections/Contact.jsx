@@ -8,19 +8,15 @@ import {
 import { SectionHeading } from '../ui/SectionHeading';
 
 /* ────────────────────────────────────────────────────────
-   Mail API options (pick one):
-
-   1) Free front-end (Netlify/Vercel) + your PHP host:
-      Set VITE_CONTACT_API_URL=https://YOUR-PHP-HOST.com/contact.php
-
-   2) Same PHP host for site + form:
-      Upload /dist (includes contact.php) — uses /contact.php
-
-   3) EmailJS (optional): set VITE_EMAILJS_* vars
+   Live PHP mail API: https://amcflow.42web.io/contact.php
+   Override with VITE_CONTACT_API_URL if needed.
+   EmailJS optional: set VITE_EMAILJS_* vars
    ──────────────────────────────────────────────────────── */
 const RECAPTCHA_SITE_KEY = '6LemeFItAAAAAMKWz73MPzMuNexaTy5iVQLOpq_L';
 
-const CONTACT_API_URL = (import.meta.env.VITE_CONTACT_API_URL || '/contact.php').replace(/\/$/, '');
+const CONTACT_API_URL = (
+  import.meta.env.VITE_CONTACT_API_URL || 'https://amcflow.42web.io/contact.php'
+).replace(/\/$/, '');
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
