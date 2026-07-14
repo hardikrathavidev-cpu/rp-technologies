@@ -6,11 +6,15 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Forward /contact.php from Vite dev server → local mail server
+      // Same-origin contact API in prod; in dev proxy to local mail server
+      '/api/contact': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: () => '/contact.php',
+      },
       '/contact.php': {
         target: 'http://localhost:3001',
         changeOrigin: true,
-        rewrite: (path) => path, // keep path as-is
       },
     },
   },

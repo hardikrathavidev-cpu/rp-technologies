@@ -8,14 +8,13 @@ import {
 import { SectionHeading } from '../ui/SectionHeading';
 
 /* ────────────────────────────────────────────────────────
-   Live PHP mail API: https://amcflow.42web.io/contact.php
-   Override with VITE_CONTACT_API_URL if needed.
-   EmailJS optional: set VITE_EMAILJS_* vars
+   Same-origin /api/contact on Vercel (avoids InfinityFree CORS block).
+   Override with VITE_CONTACT_API_URL only if you have a working PHP host.
    ──────────────────────────────────────────────────────── */
 const RECAPTCHA_SITE_KEY = '6LemeFItAAAAAMKWz73MPzMuNexaTy5iVQLOpq_L';
 
 const CONTACT_API_URL = (
-  import.meta.env.VITE_CONTACT_API_URL || 'https://amcflow.42web.io/contact.php'
+  import.meta.env.VITE_CONTACT_API_URL || '/api/contact'
 ).replace(/\/$/, '');
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
