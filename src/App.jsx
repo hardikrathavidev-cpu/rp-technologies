@@ -15,6 +15,7 @@ import { CTABanner }      from './components/sections/CTABanner';
 import { Contact }        from './components/sections/Contact';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { CustomCursor }   from './components/ui/CustomCursor';
+import { TechHUD }        from './components/ui/TechHUD';
 import {
   ScrollProgressBar,
   LeftStickyNav,
@@ -109,6 +110,7 @@ export default function App() {
 
         {/* Fixed overlays */}
         <CustomCursor />
+        <TechHUD />
         <ScrollProgressBar />
         <LeftStickyNav />
         <RightScrollIndicator />

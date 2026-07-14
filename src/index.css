@@ -252,10 +252,22 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-@keyframes floatUp {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-12px); }
+@keyframes sparkBurst {
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
 }
+@keyframes hudScan {
+  0%   { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes hudFlicker {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 0.8; }
+  52%      { opacity: 0.3; }
+  54%      { opacity: 0.7; }
+}
+
+.animate-hud-flicker { animation: hudFlicker 4s ease-in-out infinite; }
 
 .animate-float         { animation: float 7s ease-in-out infinite; }
 .animate-float-alt     { animation: floatAlt 8s ease-in-out 1s infinite; }
