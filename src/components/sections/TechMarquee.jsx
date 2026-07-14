@@ -21,8 +21,15 @@ const ITEMS = [...TECH, ...TECH];
 
 function TechChip({ name, color, icon }) {
   return (
-    <div className="flex items-center gap-2.5 px-5 py-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-surface dark:bg-dark-card mx-2.5 whitespace-nowrap hover:border-accent/40 transition-colors duration-200 group shrink-0">
-      <span className="text-base font-bold" style={{ color }}>{icon}</span>
+    <div className="flex items-center gap-2.5 px-5 py-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-surface dark:bg-dark-card mx-2.5 whitespace-nowrap hover:border-accent/40 transition-all duration-300 group shrink-0 shine-hover">
+      <motion.span
+        className="text-base font-bold"
+        style={{ color }}
+        whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+        transition={{ duration: 0.3 }}
+      >
+        {icon}
+      </motion.span>
       <span className="text-sm font-semibold text-light-muted dark:text-dark-muted group-hover:text-light-text dark:group-hover:text-dark-text transition-colors duration-200">
         {name}
       </span>

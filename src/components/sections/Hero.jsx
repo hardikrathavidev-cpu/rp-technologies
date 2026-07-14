@@ -69,7 +69,20 @@ function HeroVisual() {
       className="relative w-full max-w-[480px] h-[480px] mx-auto flex items-center justify-center select-none"
       aria-hidden="true"
     >
-      {/* Outer rings */}
+      {/* Pulsing rings */}
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={`pulse-${i}`}
+          className="pulse-ring absolute rounded-full"
+          style={{
+            width: `${i * 100 + 80}px`,
+            height: `${i * 100 + 80}px`,
+            animationDelay: `${i * 0.8}s`,
+          }}
+        />
+      ))}
+
+      {/* Outer spinning rings */}
       {[1, 2, 3].map((i) => (
         <motion.div
           key={i}
@@ -78,20 +91,34 @@ function HeroVisual() {
           animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
           transition={{ duration: 18 + i * 6, repeat: Infinity, ease: 'linear' }}
         >
-          {/* Dot on ring */}
           <motion.div
-            className="absolute -top-1.5 left-1/2 w-3 h-3 rounded-full bg-accent shadow-glow-sm"
-            style={{ transform: 'translateX(-50%)' }}
+            className="absolute -top-1.5 left-1/2 w-3 h-3 rounded-full shadow-glow-sm"
+            style={{ transform: 'translateX(-50%)', background: i === 1 ? '#00D4FF' : i === 2 ? '#8338EC' : '#FF006E' }}
           />
         </motion.div>
       ))}
 
+      {/* Central emblem */}
+      <motion.div
+        className="relative z-10 w-28 h-28 rounded-full flex items-center justify-center"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+      >
+        <div
+          className="absolute inset-0 rounded-full border-2 border-dashed border-accent/20"
+          style={{ animation: 'orbitSpin 20s linear infinite reverse' }}
+        />
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent/20 via-purple-500/15 to-pink-500/10 border border-accent/30 flex items-center justify-center shadow-glow">
+          <span className="text-2xl font-black font-display text-gradient-genz">RP</span>
+        </div>
+      </motion.div>
+
       {/* Glowing center card */}
       <motion.div
-        className="relative z-10 bg-dark-card/90 dark:bg-dark-card border border-dark-border rounded-3xl p-5 w-56 shadow-glow"
+        className="absolute z-10 bg-dark-card/90 dark:bg-dark-card border border-dark-border rounded-3xl p-5 w-56 shadow-glow glow-card"
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ backdropFilter: 'blur(20px)' }}
+        style={{ backdropFilter: 'blur(20px)', top: '55%', left: '50%', transform: 'translateX(-50%)' }}
       >
         {/* Window dots */}
         <div className="flex gap-1.5 mb-3">
@@ -256,7 +283,7 @@ export function Hero() {
               <br />
               <Typewriter />
               <br />
-              <span className="dark:text-dark-text text-light-text">That Drive Results</span>
+              <span className="text-gradient-genz">That Drive Results</span>
             </motion.h1>
 
             <motion.p

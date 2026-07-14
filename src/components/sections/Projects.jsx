@@ -70,7 +70,7 @@ function ProjectCard({ project, index }) {
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="group relative glass-card overflow-hidden cursor-default"
+      className="group relative glow-card shine-hover overflow-hidden cursor-default bg-light-surface/80 dark:bg-dark-card/80 backdrop-blur-md"
       style={{ borderColor: hovered ? `${project.color}50` : undefined, boxShadow: hovered ? `0 0 40px ${project.color}15` : undefined }}
     >
       {/* Header visual */}

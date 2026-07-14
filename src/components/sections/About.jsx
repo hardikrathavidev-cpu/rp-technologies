@@ -63,7 +63,7 @@ export function About() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
-                    className="glass-card p-4"
+                    className="glass-card p-4 glow-card shine-hover"
                   >
                     <div className="flex items-start gap-2.5">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
@@ -88,12 +88,14 @@ export function About() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, margin: '-40px' }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="glass-card p-6 group hover:border-accent/30 hover:shadow-glow-sm transition-all duration-300"
+                  className="glow-card shine-hover p-6 group transition-all duration-300 bg-light-surface/80 dark:bg-dark-card/80 backdrop-blur-md"
+                  style={{ boxShadow: '0 0 0 transparent' }}
+                  whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,212,255,0.1)' }}
                 >
                   <div className="text-accent mb-3 group-hover:scale-110 transition-transform duration-200 inline-block">
                     {icon}
                   </div>
-                  <div className="text-4xl font-bold font-display text-light-text dark:text-dark-text mb-1">
+                  <div className="text-4xl font-bold font-display text-light-text dark:text-dark-text mb-1 stat-glow">
                     <AnimatedCounter target={value} suffix={suffix} />
                   </div>
                   <div className="text-sm text-light-muted dark:text-dark-muted">{label}</div>

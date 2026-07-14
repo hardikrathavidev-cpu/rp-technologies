@@ -13,6 +13,7 @@ const SERVICES = [
     desc: 'Fast, SEO-optimised, and beautifully crafted websites that convert visitors into clients. Built for performance and long-term growth.',
     tags: ['React', 'Next.js', 'WordPress'],
     gradient: 'from-cyan-500/20 via-transparent to-transparent',
+    color: '#00D4FF',
     span: 'lg:col-span-2',
   },
   {
@@ -22,6 +23,7 @@ const SERVICES = [
     desc: 'Full-stack web applications with clean architecture, real-time features, and seamless UX.',
     tags: ['Node.js', 'PostgreSQL', 'REST API'],
     gradient: 'from-blue-500/15 via-transparent to-transparent',
+    color: '#3B82F6',
     span: '',
   },
   {
@@ -31,6 +33,7 @@ const SERVICES = [
     desc: 'Interface design that balances aesthetics with usability — wireframes, design systems, prototypes.',
     tags: ['Figma', 'Design Systems'],
     gradient: 'from-purple-500/15 via-transparent to-transparent',
+    color: '#8338EC',
     span: '',
   },
   {
@@ -40,6 +43,7 @@ const SERVICES = [
     desc: 'Bespoke software built around your exact workflow — CRMs, ERPs, internal tools, SaaS platforms.',
     tags: ['Python', 'Django', 'Microservices'],
     gradient: 'from-indigo-500/15 via-transparent to-transparent',
+    color: '#6366F1',
     span: '',
   },
   {
@@ -49,6 +53,7 @@ const SERVICES = [
     desc: 'Ongoing updates, performance monitoring, bug fixes, and priority support to keep your product reliable.',
     tags: ['24/7 Support', 'SLA'],
     gradient: 'from-emerald-500/15 via-transparent to-transparent',
+    color: '#10B981',
     span: '',
   },
   {
@@ -58,6 +63,7 @@ const SERVICES = [
     desc: 'Streamline repetitive workflows with intelligent automation — connect tools, reduce manual effort, and scale operations.',
     tags: ['Zapier', 'n8n', 'Custom APIs'],
     gradient: 'from-amber-500/15 via-transparent to-transparent',
+    color: '#FFD60A',
     span: 'lg:col-span-2',
   },
 ];
@@ -92,17 +98,38 @@ function TiltCard({ service, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className={`relative glass-card p-7 overflow-hidden cursor-default transition-all duration-300
-        ${hovered ? 'border-accent/35 shadow-glow' : ''}
+      className={`relative glow-card shine-hover p-7 overflow-hidden cursor-default transition-all duration-300
+        ${hovered ? 'shadow-glow' : ''}
         ${service.span}`}
+      style={{
+        borderColor: hovered ? `${service.color}50` : undefined,
+        boxShadow: hovered ? `0 12px 40px ${service.color}18` : undefined,
+      }}
     >
       {/* Gradient overlay */}
       <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 ${hovered ? 'opacity-100' : ''} transition-opacity duration-500 pointer-events-none rounded-2xl`} />
 
+      {/* Radial glow on hover */}
+      <div
+        className="absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none rounded-2xl"
+        style={{
+          background: `radial-gradient(circle at 30% 20%, ${service.color}12 0%, transparent 60%)`,
+          opacity: hovered ? 1 : 0,
+        }}
+      />
+
       {/* Icon */}
       <motion.div
-        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-accent bg-accent/10 border border-accent/20 relative z-10"
-        animate={{ rotate: hovered ? [0, -5, 5, 0] : 0 }}
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 border relative z-10"
+        style={{
+          color: service.color,
+          borderColor: `${service.color}30`,
+          backgroundColor: `${service.color}10`,
+        }}
+        animate={{
+          rotate: hovered ? [0, -5, 5, 0] : 0,
+          boxShadow: hovered ? `0 0 24px ${service.color}30` : '0 0 0 transparent',
+        }}
         transition={{ duration: 0.4 }}
       >
         {service.icon}
@@ -111,7 +138,12 @@ function TiltCard({ service, index }) {
       {/* Content */}
       <div className={`relative z-10 ${service.span === 'lg:col-span-2' ? 'lg:flex lg:gap-8 lg:items-start' : ''}`}>
         <div className="flex-1">
-          <h3 className={`text-lg font-bold mb-2.5 transition-colors duration-200 ${hovered ? 'text-accent' : 'text-light-text dark:text-dark-text'}`}>
+          <h3
+            className={`text-lg font-bold mb-2.5 transition-colors duration-200 ${
+              hovered ? '' : 'text-light-text dark:text-dark-text'
+            }`}
+            style={{ color: hovered ? service.color : undefined }}
+          >
             {service.title}
           </h3>
           <p className="text-sm text-light-muted dark:text-dark-muted leading-relaxed mb-4">
@@ -127,7 +159,8 @@ function TiltCard({ service, index }) {
 
       {/* Shimmer border on hover */}
       <motion.div
-        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-accent via-accent/60 to-transparent"
+        className="absolute bottom-0 left-0 h-[2px] rounded-b-2xl"
+        style={{ background: `linear-gradient(90deg, ${service.color}, transparent)` }}
         initial={{ width: 0 }}
         animate={{ width: hovered ? '100%' : 0 }}
         transition={{ duration: 0.45 }}

@@ -2,13 +2,16 @@ import React from 'react';
 import { Navbar }         from './components/layout/Navbar';
 import { Footer }         from './components/layout/Footer';
 import { Hero }           from './components/sections/Hero';
+import { StatsBar }       from './components/sections/StatsBar';
 import { TechMarquee }    from './components/sections/TechMarquee';
 import { Services }       from './components/sections/Services';
 import { About }          from './components/sections/About';
 import { HorizontalScroll } from './components/sections/HorizontalScroll';
 import { Projects }       from './components/sections/Projects';
+import { TechGrid }       from './components/sections/TechGrid';
 import { WhyUs }          from './components/sections/WhyUs';
 import { Testimonials }   from './components/sections/Testimonials';
+import { CTABanner }      from './components/sections/CTABanner';
 import { Contact }        from './components/sections/Contact';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { CustomCursor }   from './components/ui/CustomCursor';
@@ -115,13 +118,16 @@ export default function App() {
 
         <main id="main-content" className="relative z-10 pb-20 sm:pb-0">
           <Hero />
+          <StatsBar />
           <TechMarquee />
           <Services />
           <About />
-          {/* <HorizontalScroll /> */}  {/* hidden — re-enable when ready */}
+          {/* <HorizontalScroll /> */}
           <Projects />
+          <TechGrid />
           <WhyUs />
           <Testimonials />
+          <CTABanner />
           <Contact />
         </main>
 
