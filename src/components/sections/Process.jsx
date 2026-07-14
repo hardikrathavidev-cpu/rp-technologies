@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   Compass, Map, PenTool, Terminal, Rocket, LifeBuoy, ChevronRight,
@@ -183,10 +183,9 @@ function StepPanel({ step, index, active, onSelect }) {
 export function Process() {
   const [active, setActive] = useState(0);
   const activeStep = STEPS[active] || STEPS[0];
-
-  const selectStep = (index) => {
-    setActive(index);
-  };
+  const selectStep = useCallback((index) => {
+    setActive((prev) => (prev === index ? prev : index));
+  }, []);
 
   const jumpTo = (index) => {
     setActive(index);
