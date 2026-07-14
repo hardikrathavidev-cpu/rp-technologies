@@ -345,7 +345,7 @@ export function Contact() {
                       Your Name *
                     </label>
                     <input
-                      id="c-name" type="text" placeholder="Ravi Patel"
+                      id="c-name" type="text" placeholder="Full name"
                       autoComplete="name" value={form.name} onChange={update('name')}
                       className={ic('name')}
                     />
@@ -360,7 +360,7 @@ export function Contact() {
                       Email Address *
                     </label>
                     <input
-                      id="c-email" type="email" placeholder="ravi@company.com"
+                      id="c-email" type="email" placeholder="you@company.com"
                       autoComplete="email" value={form.email} onChange={update('email')}
                       className={ic('email')}
                     />
@@ -381,7 +381,7 @@ export function Contact() {
                     id="c-type" value={form.type} onChange={update('type')}
                     className={ic('type')}
                   >
-                    <option value="">Select a service...</option>
+                    <option value="">Select project type...</option>
                     {PROJECT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -393,7 +393,7 @@ export function Contact() {
                   </label>
                   <textarea
                     id="c-msg" rows={5}
-                    placeholder="Tell us about your project — goals, timeline, any relevant details..."
+                    placeholder="Brief project overview — goals, timeline, budget range..."
                     value={form.message} onChange={update('message')}
                     className={`${ic('message')} resize-none`}
                   />
