@@ -301,6 +301,9 @@ export function CustomCursor() {
   }
 
   const isInteractive = hoverType !== 'none';
+  // Snap ring to cursor on interactive elements — no spring lag
+  const ringPosX = isInteractive ? mouseX : ringX;
+  const ringPosY = isInteractive ? mouseY : ringY;
 
   return (
     <>
@@ -314,8 +317,8 @@ export function CustomCursor() {
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[99994] rounded-full"
         style={{
-          x: ringX,
-          y: ringY,
+          x: isInteractive ? mouseX : ringX,
+          y: isInteractive ? mouseY : ringY,
           translateX: '-50%',
           translateY: '-50%',
           width: 100 + speed * 3,
@@ -376,49 +379,51 @@ export function CustomCursor() {
         )}
       </AnimatePresence>
 
-      {/* Inner dot */}
+      {/* Inner dot / pointer */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[99999] rounded-full"
+        className="fixed top-0 left-0 pointer-events-none z-[99999] flex items-center justify-center"
         style={{ x: mouseX, y: mouseY, translateX: '-50%', translateY: '-50%' }}
         animate={{
           opacity: visible ? 1 : 0,
-          width: hoverType === 'input' ? 2 : clicking ? 6 : isInteractive ? 10 : 8,
-          height: hoverType === 'input' ? 14 : clicking ? 6 : isInteractive ? 10 : 8,
-          borderRadius: hoverType === 'input' ? 2 : '50%',
+          width: hoverType === 'input' ? 2 : hoverType === 'button' ? 8 : clicking ? 6 : isInteractive ? 8 : 8,
+          height: hoverType === 'input' ? 14 : hoverType === 'button' ? 8 : clicking ? 6 : isInteractive ? 8 : 8,
+          borderRadius: hoverType === 'input' ? 2 : hoverType === 'button' ? 4 : '50%',
           backgroundColor: isInteractive ? hoverColor : '#ffffff',
-          boxShadow: `0 0 ${isInteractive ? 20 : 12}px ${hoverColor}`,
+          boxShadow: `0 0 ${isInteractive ? 16 : 10}px ${hoverColor}`,
         }}
-        transition={{ duration: 0.15 }}
+        transition={{ duration: 0.12, ease: 'easeOut' }}
       />
 
-      {/* Outer ring — shape changes per hover type */}
+      {/* Outer ring */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[99998]"
+        className="fixed top-0 left-0 pointer-events-none z-[99998] box-border"
         style={{
-          x: ringX,
-          y: ringY,
+          x: ringPosX,
+          y: ringPosY,
           translateX: '-50%',
           translateY: '-50%',
         }}
         animate={{
           opacity: visible ? 1 : 0,
-          scale: clicking ? 0.6 : isInteractive ? 1.7 : moving ? 1.2 : 1,
-          width: hoverType === 'button' ? 48 : hoverType === 'link' ? 40 : 32,
-          height: hoverType === 'button' ? 48 : hoverType === 'link' ? 40 : 32,
-          borderRadius: hoverType === 'button' ? '30%' : '50%',
-          rotate: hoverType === 'link' ? [0, 90, 180, 270, 360] : 0,
+          scale: clicking ? 0.75 : 1,
+          width: hoverType === 'button' ? 36 : hoverType === 'link' ? 34 : moving ? 34 : 30,
+          height: hoverType === 'button' ? 36 : hoverType === 'link' ? 34 : moving ? 34 : 30,
+          borderRadius: hoverType === 'button' ? 8 : '50%',
+          rotate: hoverType === 'link' ? [0, 360] : 0,
           borderWidth: 2,
           borderStyle: hoverType === 'card' ? 'dashed' : 'solid',
           borderColor: isInteractive ? `${hoverColor}cc` : 'rgba(0,212,255,0.5)',
           boxShadow: isInteractive
-            ? `0 0 24px ${hoverColor}50, inset 0 0 12px ${hoverColor}15`
+            ? `0 0 20px ${hoverColor}40`
             : moving
-              ? '0 0 16px rgba(131,56,236,0.3)'
+              ? '0 0 14px rgba(131,56,236,0.25)'
               : 'none',
         }}
         transition={{
-          scale: { duration: 0.2 },
-          rotate: hoverType === 'link' ? { duration: 4, repeat: Infinity, ease: 'linear' } : { duration: 0.2 },
+          scale: { duration: 0.12 },
+          width: { duration: 0.15 },
+          height: { duration: 0.15 },
+          rotate: hoverType === 'link' ? { duration: 4, repeat: Infinity, ease: 'linear' } : { duration: 0.15 },
         }}
       />
 
@@ -427,19 +432,19 @@ export function CustomCursor() {
         {hoverType === 'button' && (
           <motion.svg
             className="fixed top-0 left-0 pointer-events-none z-[99997]"
-            style={{ x: ringX, y: ringY, translateX: '-50%', translateY: '-50%', width: 56, height: 56 }}
-            viewBox="0 0 56 56"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.6, scale: 1, rotate: 360 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ rotate: { duration: 8, repeat: Infinity, ease: 'linear' }, opacity: { duration: 0.2 } }}
+            style={{ x: mouseX, y: mouseY, translateX: '-50%', translateY: '-50%', width: 44, height: 44 }}
+            viewBox="0 0 44 44"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 0.5, scale: 1, rotate: 360 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ rotate: { duration: 8, repeat: Infinity, ease: 'linear' }, opacity: { duration: 0.15 } }}
           >
             <polygon
-              points="28,4 50,16 50,40 28,52 6,40 6,16"
+              points="22,3 39,12 39,32 22,41 5,32 5,12"
               fill="none"
               stroke="#FF006E"
               strokeWidth="1"
-              strokeDasharray="4 4"
+              strokeDasharray="3 3"
             />
           </motion.svg>
         )}
@@ -450,7 +455,7 @@ export function CustomCursor() {
         {hoverType === 'link' && (
           <motion.div
             className="fixed top-0 left-0 pointer-events-none z-[99996]"
-            style={{ x: ringX, y: ringY, translateX: '-50%', translateY: '-50%' }}
+            style={{ x: mouseX, y: mouseY, translateX: '-50%', translateY: '-50%' }}
             animate={{ rotate: 360 }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           >
