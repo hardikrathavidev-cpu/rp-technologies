@@ -6,7 +6,7 @@ import { StatsBar }       from './components/sections/StatsBar';
 import { TechMarquee }    from './components/sections/TechMarquee';
 import { Services }       from './components/sections/Services';
 import { About }          from './components/sections/About';
-import { HorizontalScroll } from './components/sections/HorizontalScroll';
+import { Process }        from './components/sections/Process';
 import { Projects }       from './components/sections/Projects';
 import { TechGrid }       from './components/sections/TechGrid';
 import { WhyUs }          from './components/sections/WhyUs';
@@ -124,7 +124,7 @@ export default function App() {
           <TechMarquee />
           <Services />
           <About />
-          {/* <HorizontalScroll /> */}
+          <Process />
           <Projects />
           <TechGrid />
           <WhyUs />
